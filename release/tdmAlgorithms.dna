@@ -1,0 +1,32 @@
+<DnaLibrary RuntimeVersion="v4.0">
+
+	<ExternalLibrary Path ="bin/Tandem.Excel.dll"/>
+
+	<Reference Name="System.Windows.Forms" />
+	<Reference Name="System.Drawing" />
+
+
+<!-- Some images that can be used in the Ribbon ui -->
+  <Image Name="Wizard" Path="bin/img/wizard.png" Pack="true" />
+  <Image Name="Excel" Path="bin/img/excel.png" Pack="true" />
+  <Image Name="Recycle" Path="bin/img/recycle_bin.png" Pack="true" />
+  <Image Name="Database" Path="bin/img/database.png" Pack="true" />
+
+<CustomUI>
+    <customUI xmlns='http://schemas.microsoft.com/office/2006/01/customui' loadImage='LoadImage'>
+      <ribbon>
+        <tabs>
+          <tab id='CustomTab' label='Tandem'>
+			<group id='WizardGroup' label='Wizard'>
+              <button id='Button1' label='Wizard' image='Wizard' size='large' onAction='OnShowWizard'/>
+			</group>
+			<group id='MemoryGroup' label='Memory'>
+              <button id='Button2' label='Clear' image='Recycle' size='large' onAction='OnClearMemory'/>
+            </group>
+          </tab>
+        </tabs>
+      </ribbon>
+ </customUI>
+</CustomUI>
+
+</DnaLibrary>
