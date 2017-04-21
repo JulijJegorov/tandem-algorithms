@@ -1,0 +1,93 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Color x:Key="DarkGrey">#8296AA</Color>
+    <Color x:Key="VeryLightGrey">#F2F2F2</Color>
+    <Color x:Key="LightGrey">#E6EAEE</Color>
+    <Color x:Key="DarkBlue">#0055AA</Color>
+    <Color x:Key="LightBlue">#D2E8FF</Color>
+    <Color x:Key="BrightBlue">#228BFF</Color>
+    <Color x:Key="VeryDarkBlue">#002144</Color>
+    
+    <SolidColorBrush x:Key="LightGreyBrush" Color="{DynamicResource LightGrey}"/>
+    <SolidColorBrush x:Key="VeryLightGreyBrush" Color="{DynamicResource VeryLightGrey}"/>
+    <SolidColorBrush x:Key="DarkGreyBrush" Color="{DynamicResource DarkGrey}"/>
+    <SolidColorBrush x:Key="LightBlueBrush" Color="{DynamicResource LightBlue}"/>
+    <SolidColorBrush x:Key="BrightBlueBrush" Color="{DynamicResource BrightBlue}"/>
+    <SolidColorBrush x:Key="DarkBlueBrush" Color="{DynamicResource DarkBlue}"/>
+    <SolidColorBrush x:Key="VeryDarkBlueBrush" Color="{DynamicResource VeryDarkBlue}"/>
+    
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{DynamicResource LightBlue}"/>
+    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{DynamicResource VeryDarkBlue}"/>
+    
+    <Style x:Key="ControlStyle" TargetType="{x:Type Control}" >
+        <Setter Property="FontFamily" Value="Arial" />
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource LightGreyBrush}"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+    </Style>
+
+    <Style TargetType="DataGrid" BasedOn="{StaticResource ControlStyle}">
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource LightGreyBrush}" />
+        <Setter Property="VerticalGridLinesBrush" Value="{DynamicResource LightGreyBrush}" />
+        <Setter Property="SelectionUnit" Value="Cell"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="Cycle"/>
+    </Style>
+
+    <Style x:Key="GridCellStyle" TargetType="{x:Type DataGridCell}">
+        <Setter Property="BorderThickness" Value="0.5"/>
+        <Setter Property="Block.TextAlignment" Value="Center"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="BorderBrush" Value="{DynamicResource LightGreyBrush}"/>
+                <Setter Property="BorderThickness" Value="0.5"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <Style TargetType="{x:Type DataGridColumnHeader}">
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{DynamicResource VeryDarkBlueBrush}"/>
+    </Style>
+    
+    <Style TargetType="TreeView" BasedOn="{StaticResource ControlStyle}">
+        <Setter Property="KeyboardNavigation.DirectionalNavigation" Value="Contained"/>
+    </Style>
+    
+    <Style TargetType="ListBox" BasedOn="{StaticResource ControlStyle}"/>
+    
+    <Style TargetType="TextBox" BasedOn="{StaticResource ControlStyle}">
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    
+    <Style x:Key="ListBoxItemStyle" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+    </Style>
+    
+    <Style x:Key="ButtonStyle" TargetType="Button">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Name="border" 
+                            BorderThickness="1"
+                            Padding="4,2" 
+                            BorderBrush="{DynamicResource DarkGreyBrush}"
+                            CornerRadius="0" 
+                            Background="{TemplateBinding Background}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{DynamicResource LightBlueBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
