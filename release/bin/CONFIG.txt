@@ -1,2 +1,2 @@
 PythonScript:
-    ExecutionPath: 'C:\Users\Tandem Algorithms\Anaconda\python.exe'
+    ExecutionPath: 'C:\Users\Tandem Algorithms\Anaconda2\pythonw.exe'

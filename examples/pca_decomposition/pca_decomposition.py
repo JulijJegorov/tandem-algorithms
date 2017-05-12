@@ -3,8 +3,11 @@ import json
 import numpy as np
 from sklearn.decomposition import PCA
 
-# load argument vector
-input_args = json.loads( sys.argv[ 1 ] )
+# load arguments vector from the text file
+filename = sys.argv[ 1 ]
+with open( filename ) as data_file:   
+    input_args = json.loads( data_file.read() )
+
 cov, n, seed = [ input_args[ 'args' ].get( key ) for key in [ 'cov', 'n', 'seed' ] ]
 
 np.random.seed( int( seed ) )

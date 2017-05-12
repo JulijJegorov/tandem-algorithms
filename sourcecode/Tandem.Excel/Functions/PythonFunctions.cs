@@ -1,12 +1,10 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using Tandem.Elements;
 using Tandem.Excel.Utilities;
-using Tandem.Elements.Utilities;
 using MongoDB.Bson;
-using System.Text.RegularExpressions;
 using YamlDotNet.RepresentationModel;
+using System;
 
 namespace Tandem.Excel.Functions
 {
@@ -36,50 +34,59 @@ namespace Tandem.Excel.Functions
                     ) { }
 
 
-        public ITdmElement tdmPyScript(string fullPath, object[,] kwargs)
+
+        /// <summary>
+        /// Executes Python script via Windows inter-process communication.</summary>
+        /// <param name="fullPath">Full path of the .py file.></param>
+        /// <param name="args">Input arguments to be saved in a text file and passed to the Python script.</param> 
+        /// <param name="saveInputFile">Optional bollean to save input arguments file (can be used to debug your Python ccode).false if omitted.)</param> 
+        /// <returns><see cref="ITdmElement"/></returns>
+        public ITdmElement tdmPyScript(string fullPath, object[,] args, bool saveInputFile = false)
         {
-            var tdmKwargs = _elementUtilities.RangeToElement(new object [,] { { "args" } }, kwargs);
-            var dictKwargs = tdmKwargs.Group.ToDictionary( x => (object)x.Key, x => x.Value );
+            BsonDocument argsBson = _elementUtilities.RangeToElement(new object[,] { { "args" } }, args).Group[0].ToBsonDocument();
+            string argsFile = string.Format("{0}\\{1}.txt", Path.GetDirectoryName(fullPath), Guid.NewGuid());
 
-            BsonDocument kwargs_json = tdmKwargs.Group[0].ToBsonDocument();
+            string outputString = null;
 
-            var configPythonScript = (YamlMappingNode)ConfigFile.Instance.PythonScript;
-            string executablePath = _getPythonExecutablePath();
+            ProcessStartInfo prcStartInfo = new ProcessStartInfo
+            {
+                FileName = _getPythonExecutablePath(),
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = false
+            };
+       
+            try
+            {
+                using (StreamWriter sw = new StreamWriter(argsFile))
+                {
+                    sw.WriteLine(argsBson);
+                    prcStartInfo.Arguments = string.Format("{0} {1}", string.Format(@"""{0}""", fullPath), string.Format(@"""{0}""", argsFile));
+                }
 
-            string ptyhonScript = string.Format( @"""{0}""", fullPath );
+                using (Process process = Process.Start(prcStartInfo))
+                {
+                    using (StreamReader myStreamReader = process.StandardOutput)
+                    {
+                        outputString = myStreamReader.ReadLine();
+                        process.WaitForExit();
+                    }
+                }
+            }
+            finally
+            {
+                if (!saveInputFile)
+                {
+                    File.Delete(argsFile);
+                }
+            }
 
-            string mykwargs = Regex.Replace(kwargs_json.ToString(), @"(\\*)" + "\"", @"$1\$0");
-            mykwargs = Regex.Replace(mykwargs, @"^(.*\s.*?)(\\*)$", "\"$1$2$2\"", RegexOptions.Singleline);
+            ITdmElement outputElement = new TdmElementGroup();
+            outputElement.FromBsonDocument(new BsonDocument(BsonDocument.Parse(outputString)));
 
-            ProcessStartInfo myProcessStartInfo = new ProcessStartInfo(executablePath);
-            
-            // make sure we can read the output from stdout 
-            myProcessStartInfo.UseShellExecute = false;
-            myProcessStartInfo.RedirectStandardOutput = true;
-            myProcessStartInfo.CreateNoWindow = true;
-            myProcessStartInfo.WindowStyle = ProcessWindowStyle.Normal;
-     
-            myProcessStartInfo.Arguments = ptyhonScript + " " + mykwargs;
-
-            Process myProcess = new Process();
-            myProcess.StartInfo = myProcessStartInfo;
-
-            myProcess.Start();
-
-            StreamReader myStreamReader = myProcess.StandardOutput;
-            string myString = myStreamReader.ReadLine();
-
-            myProcess.WaitForExit();
-
-            ITdmElement element = new TdmElementGroup();
-
-            var out_bson = new BsonDocument();
-            out_bson.Add(BsonDocument.Parse(myString));
-
-            element.FromBsonDocument(out_bson);
-
-            return element;
+            return outputElement;
         }
+
 
         private string _getPythonExecutablePath()
         {

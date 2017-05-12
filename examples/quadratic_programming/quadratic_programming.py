@@ -7,8 +7,11 @@ from cvxopt import matrix, solvers
 # disable print in cmd window
 sys.stdout = open( os.devnull, 'w' )
 
-# load argument vector
-input_args = json.loads( sys.argv[ 1 ] )
+# load arguments vector from the text file
+filename = sys.argv[ 1 ]
+with open( filename ) as data_file:   
+    input_args = json.loads( data_file.read() )
+
 P, q, G, h, A, b = [ matrix( np.array( input_args[ 'args' ][ key ] ) ) if isinstance( input_args[ 'args' ][ key ], list ) 
                                                                     else matrix( input_args[ 'args' ][ key ] ) for key in [ 'P', 'q', 'G', 'h', 'A', 'b' ] ]
 # run cvxopt quadratic programming solver 
