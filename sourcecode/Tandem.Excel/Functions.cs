@@ -207,7 +207,7 @@ namespace Tandem.Excel
         [ExcelFunction( Description = "Runs Pyhton scripts with input arguments 'args'", Category = "tdmFunctions", IsThreadSafe = false ) ]
         public static object tdmPyScript( [ ExcelArgument( Description = "full path of the python .py script" ) ] object[,] fullPath, 
                                             [ ExcelArgument( Description = "arguments of the python function" ) ] object[,] args,
-                                            [ ExcelArgument(Description = "Set to TRUE to save input arguments file (can be used to debug your Python ccode). FALSE if omitted")]object saveInputFile)
+                                            [ ExcelArgument(Description = "Set to TRUE to save input arguments file (can be used to debug your Python code). FALSE if omitted")]object saveInputFile)
         {
             if (_IsInFunctionWizard()) return _functionWizardMsg;
             bool saveFile = Optional.Check(saveInputFile, false);
