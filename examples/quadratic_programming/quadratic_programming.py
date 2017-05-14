@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import numpy as np
-from cvxopt import matrix, solvers
+from cvxopt import matrix, solvers # not part of Anaconda distribution and should be installed via 'pip install cvxopt' in the command window
 
 # disable print in cmd window
 sys.stdout = open( os.devnull, 'w' )
